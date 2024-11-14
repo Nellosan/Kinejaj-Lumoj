@@ -22,7 +22,7 @@
         <section class="mb-5">
             <form method="get" action="{{ path('home') }}" class="d-flex justify-content-center">
                 <div class="input-group input-group-lg w-75">
-                    <input type="text" id="query" name="query" class="form-control form-control-lg" value="{{ app.request.get('query') }}" placeholder="Entrez un titre de film" required>
+                    <input type="text" maxlength="100" id="query" name="query" class="form-control form-control-lg" value="{{ app.request.get('query') }}" placeholder="Entrez un titre de film" required>
                     <button type="submit" class="btn btn-primary btn-lg">Rechercher</button>
                 </div>
             </form>
@@ -34,7 +34,7 @@
 
         {% if movies is defined and movies.results is defined and movies.results|length > 0 %}
             <section class="results mb-5">
-                <h2 class="text-center mb-4">Résultats de recherche :</h2>
+                <h2 class="text-center mb-4">Résultats de recherche{{ movies.total_results is defined and movies.total_results > 0 ? " (#{movies.total_results} au total)" : '' }} :</h2>
                 <div class="row">
                     {% for movie in movies.results %}
                         <div class="col-md-{{ loop.first ? '8' : '4' }} mb-4 movie-item">
