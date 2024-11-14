@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recherche de films</title>
+</head>
+<body>
+    <header>
+        <h1>Recherche de films</h1>
+    </header>
+
+    <main>
+        <section>
+            <form method="get" action="{{ path('home') }}">
+                <div>
+                    <label for="query">Rechercher un film :</label>
+                    <input type="text" id="query" name="query" value="{{ app.request.get('query') }}" placeholder="Entrez un titre de film" required>
+                    <button type="submit">Rechercher</button>
+                </div>
+            </form>
+        </section>
+
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger">{{ message }}</div>
+        {% endfor %}
+
+        {% if movies is defined and movies.results is defined and movies.results|length > 0 %}
+            <section class="results">
+                <h2>Résultats de recherche :</h2>
+                <ul>
+                    {% for movie in movies.results %}
+                        <li class="movie-item">
+                            <h3>{{ movie.title }}</h3>
+                            <p><strong>Date de sortie :</strong> {{ movie.release_date|date("d/m/Y") }}</p>
+                            <p><strong>Synopsis :</strong> {{ movie.overview }}</p>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </section>
+        {% elseif movies is defined %}
+            <p>Aucun film trouvé pour votre recherche.</p>
+        {% endif %}
+    </main>
+
+    <footer>
+        <p>&copy; {{ "now"|date("Y") }} Kinejaj Lumoj</p>
+    </footer>
+</body>
+</html>
