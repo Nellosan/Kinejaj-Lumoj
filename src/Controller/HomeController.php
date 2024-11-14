@@ -21,11 +21,12 @@ class HomeController extends AbstractController
     public function index(Request $request): Response
     {
         $query = $request->query->get('query', '');
+        $page = $request->query->getInt('page', 1);
         $movies = [];
 
         if (!empty($query)) {
             try {
-                $movies = $this->apiClient->getData('search/movie', ['query' => urlencode($query), 'language' => 'fr-FR']);
+                $movies = $this->apiClient->getData('search/movie', ['query' => urlencode($query), 'page' => $page, 'language' => 'fr-FR']);
             } catch (\Exception $e) {
                 $this->addFlash('error', 'Une erreur est survenue lors de la recherche des films.');
             }

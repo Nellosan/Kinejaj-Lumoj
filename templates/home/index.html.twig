@@ -3,48 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recherche de films</title>
+    <title>Kinejaj Lumoj</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link href="{{ asset('styles/main.css') }}" rel="stylesheet" />
 </head>
-<body>
-    <header>
-        <h1>Recherche de films</h1>
+<body class="bg-dark text-light">
+    <header class="py-4">
+        <div class="container text-center">
+            <div class="logo-container mb-4">
+                <img src="{{ asset('images/logo.webp') }}" alt="Kinejaj Lumoj Logo" />
+            </div>
+            <h1 class="display-4">Recherche de films</h1>
+            <p class="lead">Trouvez vos films préférés avec un simple titre !</p>
+        </div>
     </header>
 
-    <main>
-        <section>
-            <form method="get" action="{{ path('home') }}">
-                <div>
-                    <label for="query">Rechercher un film :</label>
-                    <input type="text" id="query" name="query" value="{{ app.request.get('query') }}" placeholder="Entrez un titre de film" required>
-                    <button type="submit">Rechercher</button>
+    <main class="container my-5">
+        <section class="mb-5">
+            <form method="get" action="{{ path('home') }}" class="d-flex justify-content-center">
+                <div class="input-group input-group-lg w-75">
+                    <input type="text" id="query" name="query" class="form-control form-control-lg" value="{{ app.request.get('query') }}" placeholder="Entrez un titre de film" required>
+                    <button type="submit" class="btn btn-primary btn-lg">Rechercher</button>
                 </div>
             </form>
         </section>
 
         {% for message in app.flashes('error') %}
-            <div class="alert alert-danger">{{ message }}</div>
+            <div class="alert alert-danger text-center">{{ message }}</div>
         {% endfor %}
 
         {% if movies is defined and movies.results is defined and movies.results|length > 0 %}
-            <section class="results">
-                <h2>Résultats de recherche :</h2>
-                <ul>
+            <section class="results mb-5">
+                <h2 class="text-center mb-4">Résultats de recherche :</h2>
+                <div class="row">
                     {% for movie in movies.results %}
-                        <li class="movie-item">
-                            <h3>{{ movie.title }}</h3>
-                            <p><strong>Date de sortie :</strong> {{ movie.release_date|date("d/m/Y") }}</p>
-                            <p><strong>Synopsis :</strong> {{ movie.overview }}</p>
-                        </li>
+                        <div class="col-md-{{ loop.first ? '8' : '4' }} mb-4 movie-item">
+                            <div class="card text-white bg-secondary d-flex flex-column h-100">
+                                <div class="card-body d-flex flex-column">
+                                    <h3 class="card-title">{{ movie.title }}</h3>
+                                    <p class="card-text"><strong>Date de sortie :</strong> {{ movie.release_date|date("d/m/Y") }}</p>
+                                    <p class="card-text"><strong>Synopsis :</strong> {{ movie.overview }}</p>
+                                </div>
+                            </div>
+                        </div>
                     {% endfor %}
-                </ul>
+                </div>
             </section>
-        {% elseif movies is defined %}
-            <p>Aucun film trouvé pour votre recherche.</p>
+
+            {% if movies.total_pages is defined and movies.page is defined and movies.total_pages > 0 and movies.page > 0 %}
+                <div class="d-flex justify-content-center pagination-container">
+                    <ul class="pagination">
+                        <li class="page-item {% if movies.page == 1 %}disabled{% endif %}">
+                            <a class="page-link" href="{{ path('home', {'query': app.request.get('query'), 'page': movies.page - 1}) }}">Précédent</a>
+                        </li>
+
+                        {% if movies.total_pages <= 7 %}
+                            {% for page in 1..movies.total_pages %}
+                                <li class="page-item {% if page == movies.page %}active{% endif %}">
+                                    <a class="page-link" href="{{ path('home', {'query': app.request.get('query'), 'page': page}) }}">{{ page }}</a>
+                                </li>
+                            {% endfor %}
+                        {% else %}
+                            <li class="page-item {% if movies.page == 1 %}active{% endif %}">
+                                <a class="page-link" href="{{ path('home', {'query': app.request.get('query'), 'page': 1}) }}">1</a>
+                            </li>
+
+                            {% if movies.page > 3 %}
+                                <li class="page-item disabled"><span class="page-link">...</span></li>
+                            {% endif %}
+
+                            {% for page in movies.page - 1..movies.page + 1 %}
+                                {% if page > 1 and page <= movies.total_pages - 1 %}
+                                    <li class="page-item {% if page == movies.page %}active{% endif %}">
+                                        <a class="page-link" href="{{ path('home', {'query': app.request.get('query'), 'page': page}) }}">{{ page }}</a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+
+                            {% if movies.page < movies.total_pages - 2 %}
+                                <li class="page-item disabled"><span class="page-link">...</span></li>
+                            {% endif %}
+
+                            <li class="page-item {% if movies.page == movies.total_pages %}active{% endif %}">
+                                <a class="page-link" href="{{ path('home', {'query': app.request.get('query'), 'page': movies.total_pages}) }}">{{ movies.total_pages }}</a>
+                            </li>
+                        {% endif %}
+
+                        <li class="page-item {% if movies.page == movies.total_pages %}disabled{% endif %}">
+                            <a class="page-link" href="{{ path('home', {'query': app.request.get('query'), 'page': movies.page + 1}) }}">Suivant</a>
+                        </li>
+                    </ul>
+                </div>
+            {% endif %}
+        {% elseif app.request.get('query') is not empty %}
+            <p class="text-center">Aucun film trouvé pour votre recherche.</p>
         {% endif %}
     </main>
 
-    <footer>
+    <footer class="py-3 text-center bg-dark text-light">
         <p>&copy; {{ "now"|date("Y") }} Kinejaj Lumoj</p>
     </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
 </body>
 </html>
