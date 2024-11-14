@@ -6,9 +6,9 @@ Ce projet est une application Symfony qui utilise l'API de [The Movie Database](
 
 Assurez-vous d'avoir les éléments suivants installés :
 
-- **PHP** (version 8.1 ou supérieure)
+- **PHP** (version 8.2 ou supérieure)
 - **Composer** (gestionnaire de dépendances PHP)
-- **Symfony CLI**
+- **Symfony CLI** (dernière version)
 
 ## Installation
 
@@ -67,7 +67,7 @@ Cela exécute tous les tests définis dans le dossier `tests` et affiche les ré
 
 ## Consulter les logs
 
-Les logs sont stockés dans `/var/log/env_name.log`.
+Les logs sont stockés dans `./var/log/env_name.log`.
 
 ## Structure du projet
 
