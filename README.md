@@ -65,6 +65,10 @@ php bin/phpunit
 
 Cela exécute tous les tests définis dans le dossier `tests` et affiche les résultats dans le terminal.
 
+## Consulter les logs
+
+Les logs sont stockés dans `/var/log/env_name.log`.
+
 ## Structure du projet
 
 - `src/` : Contient le code source de l'application, notamment:
